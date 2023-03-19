@@ -71,7 +71,20 @@ const api={
     return axios.get(base.updateGoods,{
         params
     })
+ },
+/**
+ *  获取角色
+ */
+ getRoleList(){
+    return axios.get(base.roleList)
+ },
+ /**
+ *  添加角色
+ */
+  addRole(params){
+    return axios.get(base.addRole,{
+        params
+    })
  }
-
 }
 export default api;

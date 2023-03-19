@@ -7,11 +7,11 @@ const sqlFn = require('./mysql.js')
 const multer = require('multer')
 const fs = require('fs')
 // 导入模块 jsonwebtoken 密钥
-const jwt=require('jsonwebtoken');
+const jwt = require('jsonwebtoken');
 //config.jwtSecert
-const config=require('./secert');
+const config = require('./secert');
 // 导入mockjs
-const Mock=require('mockjs')
+const Mock = require('mockjs')
 // 路由接口
 /**
  * 商品列表：获取分页 {total:'',arr:[{},{},{}],pagesize:8,}
@@ -297,7 +297,7 @@ router.get("/backend/item/updateTbItem", (req, res) => {
  * 接受的字段：username,password
  * 测试：postman  
  */
- router.post('/login', (req, res) => {
+router.post('/login', (req, res) => {
     let { username, password } = req.body
     //请求数据库
     let sql = "select * from userinfo where username=? and password=?";
@@ -330,10 +330,14 @@ router.get("/backend/item/updateTbItem", (req, res) => {
 router.post("/register", (req, res) => {
     const {
         username,
-        password
+        password,
+        createTime,
+        email,
+        phone
     } = req.body;
-    const sql = "insert into userinfo values(null,?,?)";
-    const arr = [username, password];
+    console.log(req.query);
+    const sql = "insert into userinfo values(null,?,?,?,?,?)";
+    const arr = [username, password, email, phone, createTime];
     sqlFn(sql, arr, (result) => {
         if (result.affectedRows > 0) {
             res.send({
@@ -390,7 +394,7 @@ router.get('/test', (req, res) => {
 /**
  * 规格参数列表  参数 page
  */
- router.get("/backend/itemParam/selectItemParamAll", (req, res) => {
+router.get("/backend/itemParam/selectItemParamAll", (req, res) => {
     const page = req.query.page || 1;
     const sqlLen = "select * from params where id";
     sqlFn(sqlLen, null, data => {
@@ -528,6 +532,209 @@ router.get("/category/data", (req, res) => {
         }
     })
 })
+
+/**
+* 角色的查询  
+*/
+router.get("/role/searchs", (req, res) => {
+    const sql = "select * from role";
+    sqlFn(sql, null, result => {
+        if (result.length > 0) {
+            res.send({
+                status: 200,
+                result
+            })
+        } else {
+            res.send({
+                status: 500,
+                msg: '暂无数据'
+            })
+        }
+    })
+})
+
+/**
+ * 角色添加
+ * 参数：  authTime:Y+M+D+h+m+s,
+          createTime:Y+M+D+h+m+s,
+          key:Math.random()*100,
+          id:Math.random()*100,
+          name:roleName,
+          authName:authNames
+ */
+router.get("/addrole", (req, res) => {
+    /**
+     * 获取参数
+     */
+    var key = req.query.key || "";
+    var authTime = req.query.authTime || "";
+    var createTime = req.query.createTime || "";
+    var authName = req.query.authName || "";
+    var name = req.query.name || "";
+    var menus = req.query.menus || "";
+    const sql = "insert into role values (null,?,?,?,?,?,?)"
+    var arr = [name, authTime, authName, createTime, menus, key];
+    sqlFn(sql, arr, result => {
+        if (result.affectedRows > 0) {
+            res.send({
+                status: 200,
+                msg: "添加成功"
+            })
+        } else {
+            res.send({
+                status: 500,
+                msg: "添加失败"
+            })
+        }
+    })
+})
+
+
+/**
+ * 角色修改
+ * 参数：  authTime:Y+M+D+h+m+s,
+          createTime:Y+M+D+h+m+s,
+          key:Math.random()*100,
+          id:Math.random()*100,
+          name:roleName,
+          authName:authNames
+ */
+
+router.get("/reqUpdateRole", (req, res) => {
+    var id = req.query.id;
+    var keya = req.query.key || "";
+    var authTime = req.query.authTime || "";
+    var createTime = req.query.createTime || "";
+    var authName = req.query.authName || "";
+    var name = req.query.name || "";
+    var menus = req.query.menus || "";
+    var sql = "update role set name=?,authTime=?,authName=?,createTime=?, menus=?  where id=?";
+    var arr = [name, authTime, authName, createTime, menus, id];
+    sqlFn(sql, arr, result => {
+        if (result.affectedRows > 0) {
+            res.send({
+                status: 200,
+                msg: "修改成功"
+            })
+        } else {
+            res.send({
+                status: 500,
+                msg: "修改失败"
+            })
+        }
+    })
+})
+
+
+/**
+* 用户的查询  
+*/
+router.get("/seacrchUser", (req, res) => {
+    const sql = "select * from userinfo";
+    sqlFn(sql, null, result => {
+        if (result.length > 0) {
+            res.send({
+                status: 200,
+                result
+            })
+        } else {
+            res.send({
+                status: 500,
+                msg: '暂无数据'
+            })
+        }
+    })
+})
+
+/**
+ * 用户删除
+ */
+router.get("/user/delete", (req, res) => {
+    var id = req.query.id;
+    const sql = "delete from userinfo where id=?"
+    const arr = [id];
+    sqlFn(sql, arr, result => {
+        if (result.affectedRows > 0) {
+            res.send({
+                status: 200,
+                msg: "删除成功"
+            })
+        } else {
+            res.send({
+                status: 500,
+                msg: "删除失败"
+            })
+        }
+    })
+})
+
+
+/**
+ * 用户修改
+ * 参数
+ */
+
+router.get("/updateUser", (req, res) => {
+    var password = req.query.password;
+    var id = req.query.id;
+    var sql = "update userinfo set password=? where id=?";
+    var arr = [password, id];
+    sqlFn(sql, arr, result => {
+        if (result.affectedRows > 0) {
+            res.send({
+                status: 200,
+                msg: "修改成功"
+            })
+        } else {
+            res.send({
+                status: 500,
+                msg: "修改失败"
+            })
+        }
+    })
+})
+
+
+/**
+* 订单的查询  
+*/
+router.get("/seacrchOrder", (req, res) => {
+    const sql = "select * from orders";
+    sqlFn(sql, null, result => {
+        if (result.length > 0) {
+            res.send({
+                status: 200,
+                result
+            })
+        } else {
+            res.send({
+                status: 500,
+                msg: '暂无数据'
+            })
+        }
+    })
+})
+/**
+* 订单的删除 
+*/
+router.get("/order/delete", (req, res) => {
+    var id = req.query.id;
+    const sql = "delete from orders where id=?"
+    sqlFn(sql, [id], result => {
+        if (result.length > 0) {
+            res.send({
+                status: 200,
+                result
+            })
+        } else {
+            res.send({
+                status: 500,
+                msg: '暂无数据'
+            })
+        }
+    })
+})
+
 
 
 

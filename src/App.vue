@@ -5,16 +5,18 @@
 </template>
 <script>
 import axios from 'axios'
+import api from './api'
 export default {
   // mounted() {
   //   this.getdata()
   // },
   // methods:{
   //   async getdata() {
-  //     const res = await axios.get('http://localhost:8000/discuss/recommend')
-  //     console.log(res)
+  //     const res = await api.getRoleList()
+  //     console.log(11,res)
   //   }
   // }
+  
 }
 </script>
 <style lang="scss">

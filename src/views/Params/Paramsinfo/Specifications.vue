@@ -22,7 +22,7 @@
         :data="tableData"
         style="width: 100%"
         class="my-table"
-        border=""
+        border="1px solid #666"
       >
         <el-table-column prop="itemCatId" label="规格参数ID" width="120">
         </el-table-column>
@@ -122,18 +122,6 @@ showParams(){
           });
       }
     },
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     http(page) {

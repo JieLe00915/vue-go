@@ -13,6 +13,7 @@ const base={
     params:'/api/api/backend/itemParam/selectItemParamAll',//规格参数列表
     paramsSerch:"/api/api/params/search",//规格参数模糊查询
     insertItemParam:'/api/api/backend/itemParam/insertItemParam',//规格参数配置-添加  * 参数：itemCatId,content,specsName
-
+    roleList:'/api/api/role/searchs',//查询角色列表
+    addRole:'/api/api/addrole',//添加角色列表
 }
 export default base;
